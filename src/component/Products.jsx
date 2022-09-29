@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton';
 
 const Products = () => {
 
@@ -15,7 +17,7 @@ const Products = () => {
                 setData(await response.clone().json());
                 setFilter(await response.json());
                 setLoading(false);
-                console.log(filter)
+                // console.log(filter)
             }
             return () => {
                 componentMounted = false;
@@ -27,24 +29,48 @@ const Products = () => {
     }, []);
 
     const Loading = () => {
-        return <>Loading....</>;
+        return (
+            <>
+                <div className='col-md-3'>
+                    <Skeleton height={350} />
+                </div>
+                <div className='col-md-3'>
+                    <Skeleton height={350} />
+                </div>
+                <div className='col-md-3'>
+                    <Skeleton height={350} />
+                </div>
+                <div className='col-md-3'>
+                    <Skeleton height={350} />
+                </div>
+
+            </>
+        );
     };
+
+    const filterProduct = (cat) => {
+        const updatedList = data.filter((x) => x.category === cat);
+        setFilter(updatedList);
+    }
+
+
     const ShowProducts = () => {
         return (
             <>
-                <div className="buttons d-flex justify-content-center mb-5 pb-5">
-                    <button className="btn btn-outline-dark me-2">
+                <div className="buttons cursor-pointer d-flex justify-content-center mb-5 pb-5">
+                    <button className="btn btn-outline-dark me-2" onClick={() => setFilter(data)}>
                         All
                     </button>
-                    <button className="btn btn-outline-dark me-2">
+                    <button className="btn btn-outline-dark me-2" onClick={() => filterProduct("men's clothing")}>
+                        Men's Clothing
+                    </button>
+                    <button className="btn btn-outline-dark me-2" onClick={() => filterProduct("women's clothing")}>
                         Women's Clothing
                     </button>
-                    <button className="btn btn-outline-dark me-2">
+                    <button className="btn btn-outline-dark me-2" onClick={() => filterProduct("jewelery")}>
                         Jewelery
                     </button>
-                    <button className="btn btn-outline-dark me-2">
-                        Electronic
-                    </button>
+
                 </div>
 
                 {filter.map((product) => {
@@ -52,20 +78,31 @@ const Products = () => {
                         <>
                             <div className="col-md-3 mb-4">
                                 <div className="card h-100 text-center p-4" key={product.id}>
-                                    <img src={product.image} class="card-img-top" alt={product.title} height="250px"/>
-                                        <div className="card-body">
-                                            <h5 className="card-title mb-0">{product.title.substring(0,
-                                                12)}</h5>
-                                            <p className="card-text">
-                                                ${product.price}
-                                            </p>
-                                            <a href="#" className="btn btn-outline-dark">
-                                                Buy Now
-                                            </a>
-                                        </div>
+                                    <h5 className="card-title newin">New</h5>
+                                    <img src={product.image} className="card-img-top" alt={product.title} height="250px" />
+                                    
+                                    <div className="card-body">
+                                        <h5 className="card-title mb-0">{product.title.substring(0,
+                                            12)}</h5>
+                                        <p className="card-text">
+                                            R{product.price}
+                                        </p>
+                                        <NavLink to={"/products/R{product.id"} className="btn btn-outline-dark fw-bold">
+                                            Buy Now
+                                        </NavLink>
+                                    </div>
+
+                                    <div className='heart-fill'>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" className="bi bi-heart-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+                                        </svg>
+
+                                    </div>
                                 </div>
                             </div>
                         </>
+
                     )
                 })}
             </>
@@ -88,7 +125,8 @@ const Products = () => {
                 </div>
             </div>
         </div>
-    )
-}
+
+    );
+};
 
 export default Products;
